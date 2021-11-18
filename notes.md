@@ -13,4 +13,3 @@ User --> Posts (a user can create multiple posts.. So it is a one to many relati
 - Retrieve all posts for a user 			GET /users/{id}/posts
 - Create a post for a user 					POST /users/{id}/posts
 - Retrieve details of a post				GET /users/{id}/posts/{post_id}
-
