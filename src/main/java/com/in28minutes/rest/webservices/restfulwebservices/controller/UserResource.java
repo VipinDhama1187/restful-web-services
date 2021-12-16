@@ -16,7 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.in28minutes.rest.webservices.restfulwebservices.dto.BaseResponse;
 import com.in28minutes.rest.webservices.restfulwebservices.dto.User;
-import com.in28minutes.rest.webservices.restfulwebservices.service.UserService;
+import com.in28minutes.rest.webservices.restfulwebservices.user.service.UserService;
 
 @RestController
 public class UserResource {
