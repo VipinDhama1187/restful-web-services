@@ -3,6 +3,9 @@ package com.in28minutes.rest.webservices.restfulwebservices.dto;
 import java.time.LocalDate;
 import java.util.Set;
 
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 /**
  * The Class User.
  */
@@ -12,9 +15,11 @@ public class User {
 	private Integer id;
 
 	/** The name. */
+	@Size(min = 2, message = "name should be min of 2 characters")
 	private String name;
 
 	/** The date of birth. */
+	@Past
 	private LocalDate dateOfBirth;
 
 	/** The posts. */
