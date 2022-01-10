@@ -2,7 +2,7 @@ package com.in28minutes.rest.webservices.restfulwebservices.user.service;
 
 import java.util.List;
 
-import com.in28minutes.rest.webservices.restfulwebservices.dto.User;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 
 /**
  * The Interface UserService.

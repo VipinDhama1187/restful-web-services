@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.in28minutes.rest.webservices.restfulwebservices.dto.Post;
-import com.in28minutes.rest.webservices.restfulwebservices.dto.User;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 import com.in28minutes.rest.webservices.restfulwebservices.exception.PostNotFoundException;
 import com.in28minutes.rest.webservices.restfulwebservices.post.service.PostService;
 import com.in28minutes.rest.webservices.restfulwebservices.user.service.UserService;

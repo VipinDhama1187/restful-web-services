@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.in28minutes.rest.webservices.restfulwebservices.dto.User;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 
 @Repository
 public interface UserRepository extends CrudRepository<User, Integer> {
