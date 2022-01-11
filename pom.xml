@@ -16,8 +16,8 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>13</java.version>
-		<!-- <maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target> -->
+		<maven.compiler.source>13</maven.compiler.source>
+		<maven.compiler.target>13</maven.compiler.target>
 		<swagger-version>1.2.32</swagger-version>
 	</properties>
 	<dependencies>
