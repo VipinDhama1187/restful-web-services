@@ -1,25 +1,28 @@
 package com.in28minutes.rest.webservices.restfulwebservices.controller;
 
-import java.net.URI;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import javax.validation.Valid;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.in28minutes.rest.webservices.restfulwebservices.dto.BaseResponse;
+import com.in28minutes.rest.webservices.restfulwebservices.dto.MyUserDetails;
 import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 import com.in28minutes.rest.webservices.restfulwebservices.user.service.UserService;
 
@@ -32,6 +35,9 @@ public class UserResource {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserDetailsManager userDetailsServiceImpl;
 
 	/**
 	 * Gets the users.
@@ -66,13 +72,22 @@ public class UserResource {
 	 * @param user the user
 	 * @return the response entity
 	 */
-	@SuppressWarnings("static-access")
-	@PostMapping("/users")
-	public ResponseEntity<BaseResponse<User>> createUser(@Valid @RequestBody User user) {
-		User savedUser = userService.createUser(user);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
-		return new ResponseEntity<BaseResponse<User>>(new BaseResponse<User>("Success", HttpStatus.CREATED.value(), savedUser),
-				HttpStatus.CREATED).created(location).build();
+	@PostMapping("/user")
+	public ResponseEntity<BaseResponse<String>> createUser(@Valid @RequestBody User user) {
+		MyUserDetails myUserDetails = new MyUserDetails(user);
+		 userDetailsServiceImpl.createUser(myUserDetails);
+	//	URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+		return new ResponseEntity<BaseResponse<String>>(new BaseResponse<String>("Success", HttpStatus.CREATED.value(), String.format("User with username %s successfully created", user.getUsername())),
+				HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/user")
+	public ResponseEntity<BaseResponse<String>> updateUser(@Valid @RequestBody User user) {
+		MyUserDetails myUserDetails = new MyUserDetails(user);
+		 userDetailsServiceImpl.updateUser(myUserDetails);
+	//	URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(savedUser.getId()).toUri();
+		return new ResponseEntity<BaseResponse<String>>(new BaseResponse<String>("Success", HttpStatus.OK.value(), String.format("User with username %s successfully created", user.getUsername())),
+				HttpStatus.OK);
 	}
 	
 	/**

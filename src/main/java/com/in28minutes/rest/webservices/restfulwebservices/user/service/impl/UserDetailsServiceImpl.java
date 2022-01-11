@@ -1,12 +1,18 @@
 package com.in28minutes.rest.webservices.restfulwebservices.user.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
+import com.in28minutes.rest.webservices.restfulwebservices.dto.MyUserDetails;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
+import com.in28minutes.rest.webservices.restfulwebservices.exception.UserAlreadyExistsException;
+import com.in28minutes.rest.webservices.restfulwebservices.exception.UserNotFoundException;
 import com.in28minutes.rest.webservices.restfulwebservices.user.repo.UserRepository;
 
 @Service("userDetailsServiceImpl")
@@ -14,22 +20,41 @@ public class UserDetailsServiceImpl implements UserDetailsManager{// UserDetails
 
 	@Autowired
 	private UserRepository userRepository;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		return userRepository.findUserByUsername(username).orElseThrow(
-				() -> new UsernameNotFoundException(String.format("User Not found with username %s", username)));
+	Optional<User> optionalUser = 	 userRepository.findUserByUsername(username);
+	if(optionalUser.isPresent())
+		return new MyUserDetails(optionalUser.get());
+	else
+		throw new UsernameNotFoundException(String.format("User Not found with username %s", username));
 	}
 
 	@Override
 	public void createUser(UserDetails user) {
-		//userRepository.save(user);
-		
+		Optional<User> optionalUser = userRepository.findUserByUsername(user.getUsername());
+		if(optionalUser.isPresent())
+			throw new UserAlreadyExistsException(user.getUsername());
+		else {
+			encodePassword(((MyUserDetails)user).getUser());
+			userRepository.save(((MyUserDetails)user).getUser());
+		}
 	}
 
 	@Override
 	public void updateUser(UserDetails user) {
-		// TODO Auto-generated method stub
+		Optional<User> optionalUser = userRepository.findUserByUsername(user.getUsername());
+		if(!optionalUser.isPresent())
+			throw new UserNotFoundException(user.getUsername());
+		else {
+			User newUser = ((MyUserDetails)user).getUser();
+			encodePassword(newUser);
+			newUser.setId(optionalUser.get().getId());
+			userRepository.save(newUser);
+		}
 		
 	}
 
@@ -48,6 +73,14 @@ public class UserDetailsServiceImpl implements UserDetailsManager{// UserDetails
 	@Override
 	public boolean userExists(String username) {
 		return userRepository.findUserByUsername(username).isPresent();
+	}
+	
+	private void encodePassword(User user) {
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+	}
+	
+	private void decodePassword(User user) {
+		//System.out.println(passwordEncoder.(user.getPassword()));
 	}
 
 }

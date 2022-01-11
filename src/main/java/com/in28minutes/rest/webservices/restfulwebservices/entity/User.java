@@ -1,34 +1,33 @@
 package com.in28minutes.rest.webservices.restfulwebservices.entity;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.SecondaryTable;
-import javax.persistence.SecondaryTables;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import com.in28minutes.rest.webservices.restfulwebservices.dto.Post;
-import com.in28minutes.rest.webservices.restfulwebservices.dto.SecurityUser;
 
 /**
  * The Class User.
  */
 @Entity
 @Table(name = "USERS")
-@SecondaryTables({
-    @SecondaryTable(name="authorities")
-})
-public class User extends BaseEntity implements SecurityUser {
+public class User extends BaseEntity {
 
 	/**
 	 * 
@@ -37,6 +36,7 @@ public class User extends BaseEntity implements SecurityUser {
 
 	/** The id. */
 	@Id
+	@Column(name = "user_id")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USERS_SEQ_GEN")
 	@SequenceGenerator(sequenceName = "USERS_SEQ", name = "USERS_SEQ_GEN")
 	private Integer id;
@@ -50,11 +50,11 @@ public class User extends BaseEntity implements SecurityUser {
 	private String password;
 
 	@Column(name = "ENABLED", nullable = false)
-	private Integer enabled;
+	private boolean enabled;
 
-	@NotNull
-    @Column(table="authorities")
-    private String authority;
+	@ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinTable(name = "users_authorities", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "AUTHORITY_ID"))
+	private Set<Authority> authority = new HashSet<>();
 
 	/** The date of birth. */
 	@Past
@@ -86,13 +86,26 @@ public class User extends BaseEntity implements SecurityUser {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public User(Integer id, String username, String password, Integer enabled, LocalDate dateOfBirth) {
+	public User(Integer id, String username, String password, boolean enabled, LocalDate dateOfBirth) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.enabled = enabled;
 		this.dateOfBirth = dateOfBirth;
+	}
+
+	
+	public User(Integer id, @Size(min = 2, message = "name should be min of 2 characters") String username,
+			String password, boolean enabled, Set<Authority> authority, @Past LocalDate dateOfBirth, Set<Post> posts) {
+		super();
+		this.id = id;
+		this.username = username;
+		this.password = password;
+		this.enabled = enabled;
+		this.authority = authority;
+		this.dateOfBirth = dateOfBirth;
+		this.posts = posts;
 	}
 
 	/**
@@ -111,11 +124,11 @@ public class User extends BaseEntity implements SecurityUser {
 		this.posts = posts;
 	}
 
-	public Integer getEnabled() {
+	public boolean isEnabled() {
 		return enabled;
 	}
 
-	public void setEnabled(Integer enabled) {
+	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 	}
 
@@ -189,11 +202,11 @@ public class User extends BaseEntity implements SecurityUser {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	public String getAuthority() {
+	public Set<Authority> getAuthority() {
 		return authority;
 	}
 
-	public void setAuthority(String authority) {
+	public void setAuthority(Set<Authority> authority) {
 		this.authority = authority;
 	}
 
@@ -203,7 +216,5 @@ public class User extends BaseEntity implements SecurityUser {
 				"User [id=%s, username=%s, password=%s, enabled=%s, authority=%s, dateOfBirth=%s, posts=%s]", id,
 				username, password, enabled, authority, dateOfBirth, posts);
 	}
-
-	
 
 }
