@@ -1,15 +1,10 @@
 package com.in28minutes.rest.webservices.restfulwebservices.controller;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.provisioning.UserDetailsManager;
@@ -22,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.in28minutes.rest.webservices.restfulwebservices.dto.BaseResponse;
-import com.in28minutes.rest.webservices.restfulwebservices.dto.MyUserDetails;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.MyUserDetails;
 import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 import com.in28minutes.rest.webservices.restfulwebservices.user.service.UserService;
 
@@ -57,12 +52,12 @@ public class UserResource {
 	 * @return the user
 	 */
 	@GetMapping("/users/{id}")
-	public ResponseEntity<EntityModel<BaseResponse<User>>> getUser(@PathVariable int id) {
-		EntityModel<BaseResponse<User>> entityModal = EntityModel.of(new BaseResponse<User>("Success", HttpStatus.OK.value(), userService.findOne(id)));
+	public ResponseEntity<BaseResponse<User>> getUser(@PathVariable int id) {
+		//EntityModel<BaseResponse<User>> entityModal = EntityModel.of(new BaseResponse<User>("Success", HttpStatus.OK.value(), userService.findOne(id)));
 		
-		WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).getUsers());
-		entityModal.add(linkBuilder.withRel("all-users"));
-		return new ResponseEntity<EntityModel<BaseResponse<User>>>((entityModal),
+		//WebMvcLinkBuilder linkBuilder = linkTo(methodOn(this.getClass()).getUsers());
+		//entityModal.add(linkBuilder.withRel("all-users"));
+		return new ResponseEntity<BaseResponse<User>>(new BaseResponse<User>("Success", HttpStatus.OK.value(), userService.findOne(id)),
 				HttpStatus.OK);
 	}
 	

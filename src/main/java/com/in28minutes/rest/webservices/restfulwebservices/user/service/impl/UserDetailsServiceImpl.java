@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import com.in28minutes.rest.webservices.restfulwebservices.dto.MyUserDetails;
+import com.in28minutes.rest.webservices.restfulwebservices.entity.MyUserDetails;
 import com.in28minutes.rest.webservices.restfulwebservices.entity.User;
 import com.in28minutes.rest.webservices.restfulwebservices.exception.UserAlreadyExistsException;
 import com.in28minutes.rest.webservices.restfulwebservices.exception.UserNotFoundException;
@@ -22,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsManager{// UserDetails
 	private UserRepository userRepository;
 	
 	@Autowired
-	private PasswordEncoder passwordEncoder;
+	private PasswordEncoder userPasswordEncoder;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -76,11 +76,8 @@ public class UserDetailsServiceImpl implements UserDetailsManager{// UserDetails
 	}
 	
 	private void encodePassword(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setPassword(userPasswordEncoder.encode(user.getPassword()));
 	}
 	
-	private void decodePassword(User user) {
-		//System.out.println(passwordEncoder.(user.getPassword()));
-	}
 
 }
