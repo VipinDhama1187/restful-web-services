@@ -1,0 +1,25 @@
+version: '3.1'
+services:
+  app:
+    container_name: restful-web-service
+    image: viipindhama/restful-web-service:latest
+    ports:
+      - "8080:8080"
+    links:
+      - dbpostgresql
+  dbpostgresql:
+    container_name: dbpostgresql_container
+    image: postgres:10-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=pgadmin
+      - POSTGRES_USER=pgadmin
+      - POSTGRES_DB=test_oauth_db
+    volumes:
+      - data-volume:/var/lib/postgresql/datapostgres
+      
+      
+volumes:
+  data-volume:
+
